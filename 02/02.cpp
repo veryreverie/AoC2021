@@ -10,14 +10,19 @@ class Instruction{
     int distance;
     friend std::ostream& operator<<(std::ostream& os, const Instruction& instruction);
     friend std::istream& operator>>(std::istream& is, Instruction& instruction);
+    Instruction(const std::string& s);
 };
 
 std::ostream& operator<<(std::ostream& os, const Instruction& instruction){
-  os << instruction.direction << ' ' << instruction.distance;
+  return os << instruction.direction << ' ' << instruction.distance;
 }
 
 std::istream& operator>>(std::istream& is, Instruction& instruction){
-  is >> instruction.direction >> instruction.distance;
+  return is >> instruction.direction >> instruction.distance;
+}
+
+Instruction::Instruction(const std::string& s){
+  std::istringstream(s) >> *this;
 }
 
 int main(void){
@@ -27,17 +32,27 @@ int main(void){
   if (infile.is_open()){
     std::string line;
     while (getline(infile, line)){
-      std::istringstream linestream(line);
-      Instruction instruction;
-      linestream >> instruction;
-      instructions.push_back(instruction);
+      instructions.push_back(Instruction(line));
     }
   }
   infile.close();
   
   int position(0);
-  int aim(0);
   int depth(0);
+  for (Instruction instruction : instructions){
+    if (instruction.direction=="forward"){
+      position += instruction.distance;
+    } else if (instruction.direction=="up"){
+      depth -= instruction.distance;
+    } else if (instruction.direction=="down"){
+      depth += instruction.distance;
+    }
+  }
+  std::cout << position*depth << std::endl;
+  
+  int aim(0);
+  position = 0;
+  depth = 0;
   for (Instruction instruction : instructions){
     if (instruction.direction=="forward"){
       position += instruction.distance;
@@ -48,6 +63,5 @@ int main(void){
       aim += instruction.distance;
     }
   }
-  
   std::cout << position*depth << std::endl;
 }

@@ -16,11 +16,18 @@ int main(void){
   infile.close();
   
   int count = 0;
+  for (int i=0; i+1<vec.size(); ++i){
+    if (vec[i+1]>vec[i]){
+      ++count;
+    }
+  }
+  std::cout << count << std::endl;
+  
+  count = 0;
   for (int i=0; i+3<vec.size(); ++i){
     if (vec[i+3]>vec[i]){
       ++count;
     }
   }
-  
   std::cout << count << std::endl;
 }

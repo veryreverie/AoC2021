@@ -1,0 +1,196 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <iterator>
+#include <exception>
+#include <iomanip>
+
+template <class T>
+T munch(std::istringstream& iss, char delim) {
+  std::string token;
+  std::getline(iss, token, delim);
+  T result;
+  std::istringstream(token) >> result;
+  return result;
+}
+
+template <class T>
+std::vector<T> split(const std::string& s, char delim) {
+  std::istringstream iss(s);
+  std::vector<T> result;
+  while (not iss.eof()){
+    result.push_back(munch<T>(iss, delim));
+  }
+  return result;
+}
+
+class Box{
+  public:
+    int number;
+    bool mark;
+    
+    Box();
+    
+    friend std::ostream& operator<<(std::ostream& os, const Box& box);
+    friend std::istream& operator>>(std::istream& is, Box& box);
+    Box(const std::string& s);
+};
+
+Box::Box(){
+}
+
+std::ostream& operator<<(std::ostream& os, const Box& box){
+  if (box.mark){
+    os << '-';
+  } else {
+    os << '+';
+  }
+  return os << std::setw(2) << std::setfill('0') << box.number;
+}
+
+std::istream& operator>>(std::istream& is, Box& box){
+  is >> box.number;
+  box.mark = box.number<=0;
+  return is;
+}
+
+Box::Box(const std::string& s){
+  std::istringstream(s) >> *this;
+}
+
+class Bingo{
+  public:
+    std::vector<std::vector<Box>> boxes;
+    bool won;
+    
+    friend std::ostream& operator<<(std::ostream& os, const Bingo& bingo);
+    Bingo(std::vector<std::string> lines);
+    
+    void call(const int& number);
+    bool wins();
+    int score();
+};
+
+std::ostream& operator<<(std::ostream& os, const Bingo& bingo){
+  for (const auto& line : bingo.boxes){
+    for (const auto& box : line){
+      os << box << ' ';
+    }
+    os << std::endl;
+  }
+  return os;
+}
+
+Bingo::Bingo(std::vector<std::string> lines){
+  for (const auto& line : lines){
+    boxes.push_back({});
+    std::istringstream iss(line);
+    Box box;
+    while (not iss.eof()){
+      iss >> box;
+      boxes[boxes.size()-1].push_back(box);
+    }
+  }
+  won = false;
+}
+
+void Bingo::call(const int& number){
+  if (won){
+    return;
+  }
+  
+  for (auto& row : boxes){
+    for (auto& box : row){
+      if (box.number==number){
+        box.mark = true;
+        if (wins()){
+          won = true;
+        }
+        return;
+      }
+    }
+  }
+}
+
+bool Bingo::wins(){
+  bool result;
+  
+  for (const auto& row : boxes){
+    result = true;
+    for (const auto& box : row){
+      if (not box.mark){
+        result = false;
+        break;
+      }
+    }
+    if (result){
+      return result;
+    }
+  }
+  
+  for (int i=0; i<boxes[0].size(); ++i){
+    result = true;
+    for (const auto& row : boxes){
+      if (not row[i].mark){
+        result = false;
+        break;
+      }
+    }
+    if (result){
+      return result;
+    }
+  }
+  
+  return result;
+}
+
+int Bingo::score(){
+  int result = 0;
+  for (const auto& row : boxes){
+    for (const auto& box : row){
+      if (not box.mark){
+        result += box.number;
+      }
+    }
+  }
+  return result;
+}
+
+void day04(std::vector<std::string> lines){
+  std::vector<int> numbers = split<int>(lines[0], ',');
+  
+  std::vector<Bingo> bingos;
+  for (int i=0; i<lines.size()/6; ++i){
+    bingos.push_back(Bingo(std::vector<std::string>(&lines[6*i+2],&lines[6*i+7])));
+  }
+  
+  std::vector<int> scores;
+  for (const auto& number : numbers){
+    for (auto& bingo : bingos){
+      bool won_previously = bingo.won;
+      bingo.call(number);
+      if ((not won_previously) and bingo.won) {
+        scores.push_back(bingo.score() * number);
+      }
+    }
+  }
+  
+  std::cout << scores[0] << std::endl;
+  std::cout << scores[scores.size()-1] << std::endl;
+}
+
+int main(void){
+  std::ifstream infile("input");
+  std::vector<std::string> lines;
+  if (infile.is_open()){
+    std::string line;
+    while (getline(infile, line)){
+      lines.push_back(line);
+    }
+  }
+  infile.close();
+  
+  day04(lines);
+}
