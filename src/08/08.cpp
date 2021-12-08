@@ -1,32 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <iterator>
-#include <exception>
-#include <iomanip>
-#include <algorithm>
-#include <map>
-
-template <class T>
-T munch(std::istringstream& iss, char delim) {
-  std::string token;
-  std::getline(iss, token, delim);
-  T result;
-  std::istringstream(token) >> result;
-  return result;
-}
-
-template <class T>
-std::vector<T> split(const std::string& s, char delim) {
-  std::istringstream iss(s);
-  std::vector<T> result;
-  while (not iss.eof()){
-    result.push_back(munch<T>(iss, delim));
-  }
-  return result;
-}
+#include "08.hpp"
 
 class Display{
   public:
@@ -177,7 +149,7 @@ int Display::unscrambled_output() const {
   return result;
 }
 
-void day08(std::vector<std::string> lines){
+std::tuple<long long,long long> day08(const std::vector<std::string>& lines){
   std::vector<Display> displays;
   for (const auto& line : lines){
     displays.push_back(Display(line));
@@ -187,25 +159,11 @@ void day08(std::vector<std::string> lines){
   for (const auto& display : displays){
     unique_outputs += display.unique_outputs();
   }
-  std::cout << unique_outputs << std::endl;
   
   int output_sum = 0;
   for (const auto& display : displays){
     output_sum += display.unscrambled_output();
   }
-  std::cout << output_sum << std::endl;
-}
-
-int main(void){
-  std::ifstream infile("input");
-  std::vector<std::string> lines;
-  if (infile.is_open()){
-    std::string line;
-    while (getline(infile, line)){
-      lines.push_back(line);
-    }
-  }
-  infile.close();
   
-  day08(lines);
+  return {unique_outputs, output_sum};
 }

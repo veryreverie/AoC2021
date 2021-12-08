@@ -1,9 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <tuple>
+#include "03.hpp"
 
 class Bits{
   public:
@@ -104,16 +99,15 @@ std::vector<Bits> filter_bits(
   return result;
 }
 
-int day03(std::vector<std::string> lines){
-  int l = lines[0].size();
+std::tuple<long long,long long> day03(const std::vector<std::string>& flines){
+  int l = flines[0].size();
   
   std::vector<Bits> bits_list;
-  for (auto line : lines){
-    bits_list.push_back(Bits(line));
+  for (auto fline : flines){
+    bits_list.push_back(Bits(fline));
   }
   
   auto [gamma, epsilon] = gamma_epsilon(bits_list);
-  std::cout << int(gamma)*int(epsilon) << std::endl;
   
   std::vector<Bits> new_list = bits_list;
   Bits o2;
@@ -137,19 +131,5 @@ int day03(std::vector<std::string> lines){
     }
   }
   
-  std::cout << int(o2)*int(co2) << std::endl;
-}
-
-int main(void){
-  std::vector<std::string> lines;
-  std::ifstream infile("input");
-  if (infile.is_open()){
-    std::string line;
-    while (getline(infile, line)){
-      lines.push_back(line);
-    }
-  }
-  infile.close();
-  
-  day03(lines);
+  return {int(gamma)*int(epsilon), int(o2)*int(co2)};
 }

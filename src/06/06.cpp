@@ -1,31 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <iterator>
-#include <exception>
-#include <iomanip>
-#include <numeric>
-
-template <class T>
-T munch(std::istringstream& iss, char delim) {
-  std::string token;
-  std::getline(iss, token, delim);
-  T result;
-  std::istringstream(token) >> result;
-  return result;
-}
-
-template <class T>
-std::vector<T> split(const std::string& s, char delim) {
-  std::istringstream iss(s);
-  std::vector<T> result;
-  while (not iss.eof()){
-    result.push_back(munch<T>(iss, delim));
-  }
-  return result;
-}
+#include "06.hpp"
 
 class Fish{
   public :
@@ -99,31 +72,19 @@ long long Lifetimes::count() const {
   return std::accumulate(lifetimes.begin(), lifetimes.end(), (long long)0);
 }
 
-void day06(std::vector<std::string> flines){
+std::tuple<long long,long long> day06(const std::vector<std::string>& flines){
   Fish fish(split<int>(flines[0], ','));
   Lifetimes lifetimes(fish);
   
   for (int i=0; i<80; ++i){
     lifetimes.advance();
   }
-  std::cout << lifetimes.count() << std::endl;
+  long long count1 = lifetimes.count();
   
   for (int i=80; i<256; ++i){
     lifetimes.advance();
   }
-  std::cout << lifetimes.count() << std::endl;
-}
-
-int main(void){
-  std::ifstream infile("input");
-  std::vector<std::string> lines;
-  if (infile.is_open()){
-    std::string line;
-    while (getline(infile, line)){
-      lines.push_back(line);
-    }
-  }
-  infile.close();
+  long long count2 = lifetimes.count();
   
-  day06(lines);
+  return {count1, count2};
 }

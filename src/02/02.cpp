@@ -1,8 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <vector>
+#include "02.hpp"
 
 class Instruction{
   public:
@@ -25,17 +21,11 @@ Instruction::Instruction(const std::string& s){
   std::istringstream(s) >> *this;
 }
 
-int main(void){
+std::tuple<long long,long long> day02(const std::vector<std::string>& flines){
   std::vector<Instruction> instructions;
-  
-  std::ifstream infile("input");
-  if (infile.is_open()){
-    std::string line;
-    while (getline(infile, line)){
-      instructions.push_back(Instruction(line));
-    }
+  for (const auto& fline : flines){
+    instructions.push_back(Instruction(fline));
   }
-  infile.close();
   
   int position(0);
   int depth(0);
@@ -48,7 +38,7 @@ int main(void){
       depth += instruction.distance;
     }
   }
-  std::cout << position*depth << std::endl;
+  int result1 = position*depth;
   
   int aim(0);
   position = 0;
@@ -63,5 +53,7 @@ int main(void){
       aim += instruction.distance;
     }
   }
-  std::cout << position*depth << std::endl;
+  int result2 = position*depth;
+  
+  return {result1, result2};
 }
