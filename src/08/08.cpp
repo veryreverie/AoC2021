@@ -1,5 +1,11 @@
 #include "08.hpp"
 
+template <class T1, class T2>
+bool element_in_list(const T1& element, const T2& list){
+  return std::find(list.begin(), list.end(), element) != list.end();
+}
+
+
 class Display{
   public:
     std::vector<std::string> digits;
@@ -12,6 +18,7 @@ class Display{
     Display(const std::string& s);
     
     int unique_outputs() const;
+    std::map<int,std::string> get_num_to_rep() const;
     int unscrambled_output() const;
 };
 
@@ -53,68 +60,79 @@ int Display::unique_outputs() const {
   const std::array<int,4> unique_lengths{2,3,4,7};
   int result = 0;
   for (const auto& digit : output){
-    if (std::find(unique_lengths.begin(), unique_lengths.end(), digit.size()) != unique_lengths.end()){
+    if (element_in_list(digit.size(), unique_lengths)){
       result++;
     }
   }
   return result;
 }
 
-int Display::unscrambled_output() const {
+std::map<int,std::string> Display::get_num_to_rep() const {
   const std::string wires = "abcdefg";
   
+  // num_to_rep[i] is the representation of the number i.
   std::map<int,std::string> num_to_rep;
-  std::map<std::string,int> rep_to_num;
+  
+  // real_to_rep["x"] is the string containing the representation of "x".
+  // real_to_rep["xz"] is a string containing the representations of "x" and "z",
+  //    in an unknown order.
   std::map<std::string,std::string> real_to_rep;
   
+  // The representations of 0, 6 and 9, in an unknown order.
   std::vector<std::string> zero_six_nine;
+  
+  // The representations of 2, 3 and 5, in an unknown order.
   std::vector<std::string> two_three_five;
-  for (const auto& digit : digits){
-    int s = digit.size();
+  
+  // Identify the representations of the four numbers (1, 4, 7 and 8)
+  //    which can be identified by representation length.
+  // Separate the remaining numbers by representation length,
+  //    and store them in zero_six_nine and two_three_five.
+  for (const auto& rep : digits){
+    int s = rep.size();
     if (s==2){
-      num_to_rep[1] = digit;
-      rep_to_num[digit] = 1;
+      num_to_rep[1] = rep;
     } else if (s==3){
-      num_to_rep[7] = digit;
-      rep_to_num[digit] = 7;
+      num_to_rep[7] = rep;
     } else if (s==4){
-      num_to_rep[4] = digit;
-      rep_to_num[digit] = 4;
+      num_to_rep[4] = rep;
     } else if (s==5){
-      two_three_five.push_back(digit);
+      two_three_five.push_back(rep);
     } else if (s==6){
-      zero_six_nine.push_back(digit);
+      zero_six_nine.push_back(rep);
     } else if (s==7){
-      num_to_rep[8] = digit;
-      rep_to_num[digit] = 8;
+      num_to_rep[8] = rep;
     } else {
-      throw std::invalid_argument(digit);
+      throw std::invalid_argument(rep);
     }
   }
   
+  // Identify the representations of "cf" and "bd".
   real_to_rep["cf"] = num_to_rep[1];
   real_to_rep["bcdf"] = num_to_rep[4];
   real_to_rep["bd"] = "";
   for (const char& c : real_to_rep["bcdf"]){
-    if (real_to_rep["cf"].find(c)==std::string::npos){
+    if (not element_in_list(c, real_to_rep["cf"])){
       real_to_rep["bd"].push_back(c);
     }
   }
   
+  // Identify 0, 6 and 9 by noting that the only wire each does not contain is
+  //    "c", "d" and "e" respectively.
+  // These can be distinguished by comparing with the representations of "cf" and "bd".
+  // This also identifies the representations of "c", "d" and "e".
+  //    (and hence also "b" and "f", although these are not needed).
   for (const auto& rep : zero_six_nine){
     for (const char& c : wires){
-      if (rep.find(c)==std::string::npos){
-        if (real_to_rep["cf"].find(c)!=std::string::npos){
+      if (not element_in_list(c, rep)){
+        if (element_in_list(c, real_to_rep["cf"])){
           num_to_rep[6] = rep;
-          rep_to_num[rep] = 6;
           real_to_rep["c"] = c;
-        } else if (real_to_rep["bd"].find(c)!=std::string::npos){
+        } else if (element_in_list(c, real_to_rep["bd"])){
           num_to_rep[0] = rep;
-          rep_to_num[rep] = 0;
           real_to_rep["d"] = c;
         } else {
           num_to_rep[9] = rep;
-          rep_to_num[rep] = 9;
           real_to_rep["e"] = c;
         }
         break;
@@ -122,19 +140,34 @@ int Display::unscrambled_output() const {
     }
   }
   
+  // Identify 2, 3 and 5, by noting that:
+  //    2 is the only one of the three whose representation contains "e".
+  //    5 is the only one of the three whose representation does not contain "c".
+  //    3 is not 2 or 5.
   for (const auto& rep : two_three_five){
-    if (rep.find(real_to_rep["e"])!=std::string::npos){
+    if (element_in_list(real_to_rep["e"][0], rep)){
       num_to_rep[2] = rep;
-      rep_to_num[rep] = 2;
-    } else if (rep.find(real_to_rep["c"])==std::string::npos){
+    } else if (not element_in_list(real_to_rep["c"][0], rep)){
       num_to_rep[5] = rep;
-      rep_to_num[rep] = 5;
     } else {
       num_to_rep[3] = rep;
-      rep_to_num[rep] = 3;
     }
   }
   
+  return num_to_rep;
+}
+
+int Display::unscrambled_output() const {
+  // Get the mapping from numbers to their scrambled representation.
+  auto num_to_rep = get_num_to_rep();
+  
+  // Reverse the map, to give the mapping from scrambled representation to number.
+  std::map<std::string,int> rep_to_num;
+  for (const auto& [num,rep] : num_to_rep){
+    rep_to_num[rep] = num;
+  }
+  
+  // Decode the representations, and construct the output in decimal.
   std::array<int,4> tens{1000,100,10,1};
   int result = 0;
   for (int i=0; i<4; ++i){
