@@ -7,6 +7,23 @@
 #include "06.hpp"
 #include "07.hpp"
 #include "08.hpp"
+#include "09.hpp"
+#include "10.hpp"
+#include "11.hpp"
+#include "12.hpp"
+#include "13.hpp"
+#include "14.hpp"
+#include "15.hpp"
+#include "16.hpp"
+#include "17.hpp"
+#include "18.hpp"
+#include "19.hpp"
+#include "20.hpp"
+#include "21.hpp"
+#include "22.hpp"
+#include "23.hpp"
+#include "24.hpp"
+#include "25.hpp"
 
 void abort(){
   std::cout << "Bad input. Please call `aoc -h` for help." << std::endl;
@@ -60,7 +77,7 @@ int main(int argc, char* argv[]){
   
   std::vector<std::function<
     std::tuple<long long,long long>(const std::vector<std::string>&)
-  >> functions({day01, day02, day03, day04, day05, day06, day07, day08});
+  >> functions({day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, day11, day12, day13, day14, day15, day16, day17, day18, day19, day20, day21, day22, day23, day24, day25});
   auto [output1, output2] = functions[day-1](flines);
   std::cout << output1 << std::endl;
   std::cout << output2 << std::endl;

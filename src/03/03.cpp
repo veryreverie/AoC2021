@@ -112,7 +112,7 @@ std::tuple<long long,long long> day03(const std::vector<std::string>& flines){
   std::vector<Bits> new_list = bits_list;
   Bits o2;
   for (int i=0; i<l; ++i){
-    auto [g, _] = gamma_epsilon(new_list);
+    auto g = std::get<0>(gamma_epsilon(new_list));
     new_list = filter_bits(new_list, g, i);
     if (new_list.size()==1){
       o2 = new_list[0];
@@ -123,7 +123,7 @@ std::tuple<long long,long long> day03(const std::vector<std::string>& flines){
   new_list = bits_list;
   Bits co2;
   for (int i=0; i<l; ++i){
-    auto [_, e] = gamma_epsilon(new_list);
+    auto e = std::get<1>(gamma_epsilon(new_list));
     new_list = filter_bits(new_list, e, i);
     if (new_list.size()==1){
       co2 = new_list[0];
