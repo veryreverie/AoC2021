@@ -34,4 +34,9 @@ std::vector<T> split(const std::string& s, char delim) {
   return result;
 }
 
+template <class T1, class T2>
+bool element_in_list(const T1& element, const T2& list){
+  return std::find(list.begin(), list.end(), element) != list.end();
+}
+
 #endif
