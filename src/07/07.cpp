@@ -4,15 +4,33 @@ class Crabs{
   public:
     std::vector<int> positions;
     
-    Crabs(const std::vector<int>& positions);
+    friend std::ostream& operator<<(std::ostream& os, const Crabs& crabs);
+    friend std::istream& operator>>(std::istream& is, Crabs& crabs);
+    Crabs(const std::string& line);
 };
 
-Crabs::Crabs(const std::vector<int>& _positions){
-  positions = _positions;
+std::ostream& operator<<(std::ostream& os, const Crabs& crabs){
+  for (const auto position : crabs.positions){
+    os << position << ',';
+  }
+  return os;
+}
+
+std::istream& operator>>(std::istream& is, Crabs& crabs){
+  int position;
+  while (is >> position){
+    crabs.positions.push_back(position);
+    is >> Ignore(1,',');
+  }
+  return is;
+}
+
+Crabs::Crabs(const std::string& line){
+  std::istringstream(line) >> *this;
 }
 
 std::tuple<long long,long long> day07(const std::vector<std::string>& flines){
-  Crabs crabs(split<int>(flines[0], ','));
+  Crabs crabs(flines[0]);
   
   int max_position = *std::max_element(crabs.positions.begin(), crabs.positions.end());
   

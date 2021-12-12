@@ -25,7 +25,7 @@
 #include "24.hpp"
 #include "25.hpp"
 
-void abort(){
+void input_abort(){
   std::cout << "Bad input. Please call `aoc -h` for help." << std::endl;
   exit(1);
 }
@@ -59,7 +59,7 @@ std::vector<std::string> read_input_file(const std::string& filename){
 
 int main(int argc, char* argv[]){
   if (argc!=2){
-    abort();
+    input_abort();
   }
   std::string arg(argv[1]);
   if (arg=="-h" or arg=="--help"){
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]){
   try {
     day = std::stoi(arg);
   } catch (const std::invalid_argument& e){
-    abort();
+    input_abort();
   }
   
   std::string filename = make_filename(day);

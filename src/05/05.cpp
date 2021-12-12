@@ -25,12 +25,10 @@ std::ostream& operator<<(std::ostream& os, const Line& line){
 }
 
 std::istream& operator>>(std::istream& is, Line& line){
-  std::string token;
-  is >> token;
-  line.start = split<int>(token, ',');
-  is >> token;
-  is >> token;
-  line.end = split<int>(token, ',');
+  int a,b,c,d;
+  is >> a >> Ignore(1,',') >> b >> Ignore(2,'>')  >> c >> Ignore(1,',') >> d;
+  line.start = {a, b};
+  line.end = {c, d};
   return is;
 }
 

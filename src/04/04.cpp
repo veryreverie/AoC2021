@@ -1,5 +1,34 @@
 #include "04.hpp"
 
+class Calls{
+  public:
+    std::vector<int> calls;
+    
+    friend std::ostream& operator<<(std::ostream& os, const Calls& calls);
+    friend std::istream& operator>>(std::istream& is, Calls& calls);
+    Calls(const std::string& line);
+};
+
+std::ostream& operator<<(std::ostream& os, const Calls& calls){
+  for (const auto call : calls.calls){
+    os << call << ',';
+  }
+  return os;
+}
+
+std::istream& operator>>(std::istream& is, Calls& calls){
+  int call;
+  while (is >> call){
+    calls.calls.push_back(call);
+    is >> Ignore(1,',');
+  }
+  return is;
+}
+
+Calls::Calls(const std::string& line){
+  std::istringstream(line) >> *this;
+}
+
 class Box{
   public:
     int number;
@@ -133,7 +162,7 @@ int Bingo::score(){
 }
 
 std::tuple<long long,long long> day04(const std::vector<std::string>& flines){
-  std::vector<int> numbers = split<int>(flines[0], ',');
+  Calls calls(flines[0]);
   
   std::vector<Bingo> bingos;
   for (int i=0; i<flines.size()/6; ++i){
@@ -141,12 +170,12 @@ std::tuple<long long,long long> day04(const std::vector<std::string>& flines){
   }
   
   std::vector<int> scores;
-  for (const auto& number : numbers){
+  for (const auto& call : calls.calls){
     for (auto& bingo : bingos){
       bool won_previously = bingo.won;
-      bingo.call(number);
+      bingo.call(call);
       if ((not won_previously) and bingo.won) {
-        scores.push_back(bingo.score() * number);
+        scores.push_back(bingo.score() * call);
       }
     }
   }

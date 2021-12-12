@@ -28,7 +28,7 @@ std::tuple<long long,long long> day10(const std::vector<std::string>& flines){
     std::vector<char> brackets;
     bool corrupt = false;
     for (const char& c : fline){
-      if (element_in_list(c, openers)){
+      if (item_in_list(c, openers)){
         brackets.push_back(c);
       } else if (brackets.size()>0 and brackets[brackets.size()-1]==pairs[c]){
         brackets.pop_back();

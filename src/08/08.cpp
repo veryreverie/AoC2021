@@ -54,7 +54,7 @@ int Display::unique_outputs() const {
   const std::array<int,4> unique_lengths{2,3,4,7};
   int result = 0;
   for (const auto& digit : output){
-    if (element_in_list(digit.size(), unique_lengths)){
+    if (item_in_list(digit.size(), unique_lengths)){
       result++;
     }
   }
@@ -106,7 +106,7 @@ std::map<int,std::string> Display::get_num_to_rep() const {
   real_to_rep["bcdf"] = num_to_rep[4];
   real_to_rep["bd"] = "";
   for (const char& c : real_to_rep["bcdf"]){
-    if (not element_in_list(c, real_to_rep["cf"])){
+    if (not item_in_list(c, real_to_rep["cf"])){
       real_to_rep["bd"].push_back(c);
     }
   }
@@ -118,11 +118,11 @@ std::map<int,std::string> Display::get_num_to_rep() const {
   //    (and hence also "b" and "f", although these are not needed).
   for (const auto& rep : zero_six_nine){
     for (const char& c : wires){
-      if (not element_in_list(c, rep)){
-        if (element_in_list(c, real_to_rep["cf"])){
+      if (not item_in_list(c, rep)){
+        if (item_in_list(c, real_to_rep["cf"])){
           num_to_rep[6] = rep;
           real_to_rep["c"] = c;
-        } else if (element_in_list(c, real_to_rep["bd"])){
+        } else if (item_in_list(c, real_to_rep["bd"])){
           num_to_rep[0] = rep;
           real_to_rep["d"] = c;
         } else {
@@ -139,9 +139,9 @@ std::map<int,std::string> Display::get_num_to_rep() const {
   //    5 is the only one of the three whose representation does not contain "c".
   //    3 is not 2 or 5.
   for (const auto& rep : two_three_five){
-    if (element_in_list(real_to_rep["e"][0], rep)){
+    if (item_in_list(real_to_rep["e"][0], rep)){
       num_to_rep[2] = rep;
-    } else if (not element_in_list(real_to_rep["c"][0], rep)){
+    } else if (not item_in_list(real_to_rep["c"][0], rep)){
       num_to_rep[5] = rep;
     } else {
       num_to_rep[3] = rep;

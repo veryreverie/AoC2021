@@ -2,13 +2,31 @@
 
 class Fish{
   public :
-    std::vector<int> fish;
+    std::vector<int> timers;
     
-    Fish(const std::vector<int>& fish);
+    friend std::ostream& operator<<(std::ostream& os, const Fish& fish);
+    friend std::istream& operator>>(std::istream& is, Fish& fish);
+    Fish(const std::string& line);
 };
 
-Fish::Fish(const std::vector<int>& input){
-  fish = input;
+std::ostream& operator<<(std::ostream& os, const Fish& fish){
+  for (const auto timer : fish.timers){
+    os << timer << ',';
+  }
+  return os;
+}
+
+std::istream& operator>>(std::istream& is, Fish& fish){
+  int timer;
+  while (is >> timer){
+    fish.timers.push_back(timer);
+    is >> Ignore(1,',');
+  }
+  return is;
+}
+
+Fish::Fish(const std::string& line){
+  std::istringstream(line) >> *this;
 }
 
 class Lifetimes{
@@ -53,8 +71,8 @@ Lifetimes::Lifetimes(const std::string& s){
 }
 
 Lifetimes::Lifetimes(const Fish& fish) : Lifetimes(){
-  for (const auto& f : fish.fish){
-    lifetimes[f]++;
+  for (const auto& timer : fish.timers){
+    lifetimes[timer]++;
   }
 }
 
@@ -73,7 +91,7 @@ long long Lifetimes::count() const {
 }
 
 std::tuple<long long,long long> day06(const std::vector<std::string>& flines){
-  Fish fish(split<int>(flines[0], ','));
+  Fish fish(flines[0]);
   Lifetimes lifetimes(fish);
   
   for (int i=0; i<80; ++i){
