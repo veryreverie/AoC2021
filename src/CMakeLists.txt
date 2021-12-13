@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 enable_language(CXX)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -18,6 +18,14 @@ foreach(dir IN ITEMS ${days})
   target_include_directories(aoc21 PRIVATE ${dir})
 endforeach()
 
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
 foreach(dir IN ITEMS ${days})
   set(input ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/input)
   set(output ${CMAKE_CURRENT_BINARY_DIR}/input_${dir})
@@ -30,3 +38,9 @@ foreach(dir IN ITEMS ${days})
   add_custom_target(${dir} DEPENDS ${output})
   add_dependencies(aoc21 ${dir})
 endforeach()
+
+enable_testing()
+add_executable(hello_test hello_test.cpp)
+target_link_libraries(hello_test gtest_main)
+include(GoogleTest)
+gtest_discover_tests(hello_test)
