@@ -47,8 +47,8 @@ std::ostream& operator<<(std::ostream& os, const Cave& cave){
 }
 
 void Cave::add_neighbour(const Cave& neighbour){
-  try{
-    neighbours.at(neighbour.name) ++;
+  try {
+    neighbours.at(neighbour.name)++;
   } catch(const std::out_of_range& e){
     neighbours.insert({neighbour.name, 1});
   }
