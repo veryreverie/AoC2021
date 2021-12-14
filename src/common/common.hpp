@@ -31,4 +31,8 @@ bool item_in_list(const T1& element, const T2& list){
   return std::find(list.begin(), list.end(), element) != list.end();
 }
 
+std::vector<std::string> split(std::istream& input, const char& delim='\n');
+std::vector<std::string> split(const char* input, const char& delim='\n');
+std::vector<std::string> read_file(const std::string& filename);
+
 #endif

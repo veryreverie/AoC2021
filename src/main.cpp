@@ -43,20 +43,6 @@ std::string make_filename(const int& day){
   return oss.str();
 }
 
-std::vector<std::string> read_input_file(const std::string& filename){
-  std::ifstream infile(filename);
-  std::vector<std::string> flines;
-  if (infile.is_open()){
-    std::string fline;
-    while (getline(infile, fline)){
-      flines.push_back(fline);
-    }
-  }
-  infile.close();
-  
-  return flines;
-}
-
 int main(int argc, char* argv[]){
   if (argc!=2){
     input_abort();
@@ -73,11 +59,38 @@ int main(int argc, char* argv[]){
   }
   
   std::string filename = make_filename(day);
-  std::vector<std::string> flines = read_input_file(filename);
+  std::vector<std::string> flines = read_file(filename);
   
-  std::vector<std::function<
+  using func = std::function<
     std::tuple<long long,long long>(const std::vector<std::string>&)
-  >> functions({day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, day11, day12, day13, day14, day15, day16, day17, day18, day19, day20, day21, day22, day23, day24, day25});
+  >;
+  std::vector<func> functions({
+    day01,
+    day02,
+    day03,
+    day04,
+    day05,
+    day06,
+    day07,
+    day08,
+    day09,
+    day10,
+    day11,
+    day12,
+    day13,
+    day14,
+    day15,
+    day16,
+    day17,
+    day18,
+    day19,
+    day20,
+    day21,
+    day22,
+    day23,
+    day24,
+    day25
+  });
   auto [output1, output2] = functions[day-1](flines);
   std::cout << output1 << std::endl;
   std::cout << output2 << std::endl;

@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
+#include "03.hpp"
 
-// Demonstrate some basic assertions.
-TEST(Test03, BasicAssertions) {
-  // Expect two strings not to be equal.
-  EXPECT_STRNE("hello", "world");
-  // Expect equality.
-  EXPECT_EQ(7 * 6, 42);
+TEST(Day03, day03){
+  std::vector<std::string> input = read_file("test_input_03");
+  const auto [result1, result2] = day03(input);
+  
+  EXPECT_EQ(result1, 198);
+  EXPECT_EQ(result2, 230);
 }

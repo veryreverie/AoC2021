@@ -27,21 +27,21 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 foreach(dir IN ITEMS ${days})
-  set(input ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/input)
-  set(output ${CMAKE_CURRENT_BINARY_DIR}/input_${dir})
-  add_custom_command(
-    COMMENT "Updating input file for day ${dir}."
-    DEPENDS ${input}
-    OUTPUT ${output}
-    COMMAND ${CMAKE_COMMAND} -E copy ${input} ${output}
-  )
-  add_custom_target(${dir} DEPENDS ${output})
-  add_dependencies(aoc21 ${dir})
+  foreach(file IN ITEMS input test_input)
+    set(input ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/${file})
+    set(output ${CMAKE_CURRENT_BINARY_DIR}/${file}_${dir})
+    add_custom_command(
+      COMMENT "Updating input file for day ${dir}."
+      DEPENDS ${input}
+      OUTPUT ${output}
+      COMMAND ${CMAKE_COMMAND} -E copy ${input} ${output}
+    )
+    add_custom_target(${dir}_${file} DEPENDS ${output})
+    add_dependencies(aoc21 ${dir}_${file})
+  endforeach()
 endforeach()
 
 enable_testing()
-add_executable(hello_test hello_test.cpp)
-target_link_libraries(hello_test gtest_main)
 
 set(test_sources common/common.cpp common/common.hpp)
 foreach(dir IN ITEMS ${days})
@@ -55,5 +55,4 @@ foreach(dir IN ITEMS ${days})
 endforeach()
 
 include(GoogleTest)
-gtest_discover_tests(hello_test)
 gtest_discover_tests(tests)
