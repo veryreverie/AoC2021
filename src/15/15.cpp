@@ -54,7 +54,7 @@ namespace Day15{
         for (int j=0; j<repeats; ++j){
           for (const char& c : line){
             y++;
-            points[points.size()-1].push_back(Point(x,y,((c-'0')+i+j-1)%9+1));
+            points.back().push_back(Point(x,y,((c-'0')+i+j-1)%9+1));
           }
         }
       }
@@ -137,7 +137,7 @@ namespace Day15{
   int calculate_risk(const std::vector<std::string>& flines, const int& repeats){
     Grid grid(flines, repeats);
     RiskMap risk_map(grid);
-    return risk_map.risks[risk_map.risks.size()-1][risk_map.risks[0].size()-1];
+    return risk_map.risks.back().back();
   }
 
   std::tuple<long long,long long> day15(const std::vector<std::string>& flines){

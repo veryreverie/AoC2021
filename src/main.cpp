@@ -59,37 +59,37 @@ int main(int argc, char* argv[]){
   }
   
   std::string filename = make_filename(day);
-  std::vector<std::string> flines = read_file(filename);
+  std::vector<std::string> flines = Common::read_file(filename);
   
   using func = std::function<
     std::tuple<long long,long long>(const std::vector<std::string>&)
   >;
   std::vector<func> functions({
-    day01,
-    day02,
-    day03,
-    day04,
-    day05,
-    day06,
-    day07,
-    day08,
-    day09,
-    day10,
-    day11,
-    day12,
-    day13,
-    day14,
-    day15,
-    day16,
-    day17,
-    day18,
-    day19,
-    day20,
-    day21,
-    day22,
-    day23,
-    day24,
-    day25
+    Day01::day01,
+    Day02::day02,
+    Day03::day03,
+    Day04::day04,
+    Day05::day05,
+    Day06::day06,
+    Day07::day07,
+    Day08::day08,
+    Day09::day09,
+    Day10::day10,
+    Day11::day11,
+    Day12::day12,
+    Day13::day13,
+    Day14::day14,
+    Day15::day15,
+    Day16::day16,
+    Day17::day17,
+    Day18::day18,
+    Day19::day19,
+    Day20::day20,
+    Day21::day21,
+    Day22::day22,
+    Day23::day23,
+    Day24::day24,
+    Day25::day25
   });
   auto [output1, output2] = functions[day-1](flines);
   std::cout << output1 << std::endl;

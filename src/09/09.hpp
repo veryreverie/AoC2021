@@ -3,6 +3,8 @@
 
 #include "common.hpp"
 
-std::tuple<long long,long long> day09(const std::vector<std::string>& flines);
+namespace Day09{
+  std::tuple<long long,long long> day09(const std::vector<std::string>& flines);
+}
 
 #endif

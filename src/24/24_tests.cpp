@@ -2,8 +2,8 @@
 #include "24.hpp"
 
 TEST(Day24, day24){
-  std::vector<std::string> input = read_file("test_input_24");
-  const auto [result1, result2] = day24(input);
+  std::vector<std::string> input = Common::read_file("test_input_24");
+  const auto [result1, result2] = Day24::day24(input);
   
   EXPECT_EQ(result1, 0);
   EXPECT_EQ(result2, 0);
